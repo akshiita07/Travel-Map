@@ -25,21 +25,18 @@ const db = new pg.Client({
 
 db.connect();   //start connection to db
 
+app.get('/', async (req, res) => {
+    const result = await db.query("SELECT code FROM visited_countries")
+    try {
+        for (var i = 0; i < result.rows.length; i++) {
+            countrydb.push(result.rows[i].code);
+        }
 
-db.query("SELECT * FROM visited_countries",function(err,res){
-    if(err){
-        console.error("Some error occurred: ",err.stack);
-    }else{
-        // console.log(res.rows);      //returns all rows in visited_countries table
-        countrydb = res.rows;
         // console.log(countrydb);
+    } catch (err) {
+        console.error("Some error occurred: ", err.stack);
     }
     //close connection:
-    db.end();
-});
-
-
-app.get('/', (req, res) => {
     // console.log(countrydb); array:[ { id: 1, code: 'FR' }, { id: 2, code: 'GB' }, { id: 3, code: 'US' } ]
     res.render('index.ejs', {
         // converts JavaScript objects (here array) into JSON string
@@ -47,6 +44,14 @@ app.get('/', (req, res) => {
         countryOutput: JSON.stringify(countrydb),
         totalCountriesSelected: countrydb.length,
     });
+
+    db.end();
+});
+
+app.post("/submit",function asyn(req,res){
+    // console.log(req.body);  output:{ userInputCountry: 'spain' }
+    console.log(req.body.userInputCountry); 
+    // const result=db.query("INSERT INTO countries(code,cname) VALUES ()")
 
 });
 
