@@ -12,7 +12,7 @@ const port = 3000;
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }))
 
-let countrydb = [];       //stores our visited countries from db
+let countrydb = {};       //stores our visited countries from db
 
 //database:
 const db = new pg.Client({
@@ -41,7 +41,7 @@ app.get('/', async (req, res) => {
     res.render('index.ejs', {
         // converts JavaScript objects (here array) into JSON string
         // console.log(JSON.stringify(countrydb));  [{"id":1,"code":"FR"},{"id":2,"code":"GB"},{"id":3,"code":"US"}]
-        countryOutput: countrydb,
+        countryOutput: JSON.stringify(countrydb),
         totalCountriesSelected: countrydb.length,
     });
 
