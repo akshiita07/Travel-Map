@@ -12,7 +12,7 @@ const port = 3000;
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }))
 
-let countrydb = [];       //stores our visited countries from db
+let countrydb = {};       //stores our visited countries from db
 
 //database:
 const db = new pg.Client({
@@ -25,18 +25,14 @@ const db = new pg.Client({
 
 db.connect();   //start connection to db
 
-db.query("SELECT code FROM visited_countries",function(err,res){
+
+db.query("SELECT * FROM visited_countries",function(err,res){
     if(err){
         console.error("Some error occurred: ",err.stack);
     }else{
         // console.log(res.rows);      //returns all rows in visited_countries table
-
-        //countrydb = res.rows;     if this method then we have to JSON stringify n parse
-        for(var i=0;i<res.rows.length;i++){
-            countrydb.push(res.rows[i].code);
-        }
-
-        console.log(countrydb);
+        countrydb = res.rows;
+        // console.log(countrydb);
     }
     //close connection:
     db.end();
@@ -48,7 +44,7 @@ app.get('/', (req, res) => {
     res.render('index.ejs', {
         // converts JavaScript objects (here array) into JSON string
         // console.log(JSON.stringify(countrydb));  [{"id":1,"code":"FR"},{"id":2,"code":"GB"},{"id":3,"code":"US"}]
-        countryOutput: countrydb,
+        countryOutput: JSON.stringify(countrydb),
         totalCountriesSelected: countrydb.length,
     });
 

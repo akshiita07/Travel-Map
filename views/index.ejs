@@ -385,14 +385,14 @@
         //add them to an array
         
         // countryOutput is a JSON string that must be parsed
-        // const outputDb=JSON.parse('<%#- countryOutput %>');
+        const outputDb=JSON.parse('<%- countryOutput %>');
+        console.log(outputDb);   //id code
         
-        
-        console.log("<%= countryOutput %>");
-        const countryCodes = "<%= countryOutput %>".split(",");
-        for (var i = 0; i < countryCodes.length; i++) {
-            console.log(countryCodes[i]);
-            document.getElementById(countryCodes[i]).style.fill = "teal";
+        // const countryCodes = "<%#= countryOutput %>".split(",");
+
+        for (var i = 0; i < outputDb.length; i++) {
+            console.log(outputDb[i].code);
+            document.getElementById(outputDb[i].code).style.fill = "teal";
         }
 
     </script>
