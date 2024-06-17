@@ -1,9 +1,10 @@
-//npm init
+﻿//npm init
 //npm i express body-parser ejs pg
 import express from 'express';
 import bodyParser from 'body-parser';
 import ejs from 'ejs';
 import pg from 'pg';
+import { error } from 'console';
 
 const app = express();
 const port = 3000;
@@ -27,6 +28,7 @@ db.connect();   //start connection to db
 
 app.get('/', async (req, res) => {
     const result = await db.query("SELECT code FROM visited_countries")
+
     try {
         for (var i = 0; i < result.rows.length; i++) {
             countrydb.push(result.rows[i].code);
@@ -34,7 +36,7 @@ app.get('/', async (req, res) => {
         // console.log(result.rowCount);
 
 
-        console.log("The countries queried are: "+countrydb);
+        console.log("The countries queried are: " + countrydb);
         // console.log(countrydb); array:[ { id: 1, code: 'FR' }, { id: 2, code: 'GB' }, { id: 3, code: 'US' } ]
         res.render('index.ejs', {
             // converts JavaScript objects (here array) into JSON string
@@ -89,14 +91,38 @@ app.post("/submit", async (req, res) => {
         const codeToInsert = resultCode.rows[0].code;
         // console.log(codeToInsert);
 
-        //add this code to visited_countries table:
-        const result = await db.query("INSERT INTO visited_countries(code) VALUES ($1)", [codeToInsert]);
+        //if already inserted then wrong
+        const isVisited = db.query("SELECT code FROM visited_countries WHERE code=$1", [codeToInsert]);
+        if ((await isVisited).rowCount > 0) {
+            //already visited
+            const result = await db.query("SELECT code FROM visited_countries")
+            res.render("index.ejs", {
+                countryOutput: countrydb,
+                totalCountriesSelected: result.rowCount,
+                errorInput: 'Country already visited! ',
+            })
+        }
+        else {
+            //new country query:
+
+            //add this code to visited_countries table:
+            const result = await db.query("INSERT INTO visited_countries(code) VALUES ($1)", [codeToInsert]);
+            res.redirect('/');
+        }
+
     }
     else {
+        const result = await db.query("SELECT code FROM visited_countries")
+
         console.log("No country found!")
+        res.render("index.ejs", {
+            errorInput: 'Country name does not exist try again! ',
+            totalCountriesSelected: result.rowCount,
+            countryOutput: countrydb,
+        });
+        //change placeholder of input: Country name does not exist try again
     }
 
-    res.redirect('/');
 
     // db.end();
 });
