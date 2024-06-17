@@ -14,7 +14,7 @@
     <h1>Welcome to Travel Map</h1>
 
     <form action="/submit" method="post">
-        <input type="text" placeholder="Enter country here" autofocus>
+        <input type="text" name="userInputCountry" placeholder="<%if(locals.errorInput){%><%= errorInput %><%}else{%>'Enter country here'<%}%>" autofocus autocomplete="off">
         <button type="submit">Add</button>
     </form>
 
