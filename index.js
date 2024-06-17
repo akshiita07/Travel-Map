@@ -82,7 +82,8 @@ app.post("/submit", async (req, res) => {
     console.log(userInput);
 
     //fetch country code corresponding to country name:
-    const resultCode = await db.query("SELECT code FROM countries WHERE cname=$1", [userInput]);
+    // const resultCode = await db.query("SELECT code FROM countries WHERE cname=$1", [userInput]);
+    const resultCode = await db.query("SELECT code FROM countries WHERE cname LIKE $1", [`%${userInput}%`]);
 
     if (resultCode.rowCount > 0) {
         console.log(resultCode.rows);        //output:[ { code: 'ES' } ]
