@@ -1,4 +1,4 @@
-﻿/* world map */
+/* world map */
 .ag-canvas {
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -28,7 +28,7 @@
 }
 
 .ag-canvas_svg path {
-    fill: #383d46;
+    fill: #90c221;
     fill-opacity: 1;
     stroke: #21252b;
     stroke-opacity: 1;
@@ -61,7 +61,7 @@ body {
 }
 
 body {
-    background: #21252bef;
+    background: #0075c2;
     font-family: "Roboto", sans-serif;
     color: #d3ddef;
 }
@@ -85,6 +85,8 @@ input {
     margin: 0;
     font-size: 1rem;
     padding-bottom: 10px;
+    position: absolute;
+    bottom: 0;
 }
 
 button {
